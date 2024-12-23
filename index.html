@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>DDSP-SFX</title>
+
+    <link href="https://fonts.googleapis.com/css?family=Crimson+Text:400,400i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,600" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" type="text/css" href="index.css">
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+
+
+    <div class='section'>
+        <h1>A similarity-based conditioning method for controllable sound effects synthesis</h1>
+        <div class="author-section">
+            <span class="author-block">
+                Yunyi Liu,</span>
+                <span class="author-block">
+                Craig Jin
+                </span>
+        </div>
+        <div class="is-size-5 publication-authors">
+            <span class="author-block">Computing and Audio Research Laboratory, Department of Eletrical and Information Engineering, The University of
+                Sydney, Sydney, Australia</span>
+          </div>
+
+        <img src="images/ICDDSP-Architecture.png" alt="Description of the image" class="author-image">
+
+
+        <p>Generating sound effects with controllable variations is a challenging task, traditionally
+            addressed using sophisticated physical models that require in-depth knowledge of signal processing
+            parameters and algorithms. In the era of generative and large language models, text has
+            emerged as a common, human-interpretable interface for controlling sound synthesis. However,
+            the discrete and qualitative nature of language tokens makes it difficult to capture subtle
+            timbral variations across different sounds. In this research, we propose a novel similarity-based
+            conditioning method for sound synthesis, leveraging differentiable digital signal processing
+            (DDSP). This approach combines the use of latent space for learning and controlling audio
+            timbre with an intuitive guiding vector, normalized within the range [0,1], to encode categorical
+            acoustic information. By utilizing pre-trained audio representation models, our method
+            achieves expressive and fine-grained timbre control. To benchmark our approach, we introduce
+            two sound effect datasets, Footstep-set and Impact-set, designed to evaluate both controllability
+            and sound quality. Regression analysis demonstrates that the proposed similarity
+            score effectively controls timbre variations and enables creative applications such as timbre
+            interpolation between discrete classes. Our work provides a robust and versatile framework
+            for sound effect synthesis, bridging the gap between traditional signal processing and modern
+            machine learning techniques. 
+            
+        </p>
+    </div>
+
+    <hr>
+
+    <h1 class="section-title">Transient Modelling</h1>
+    <div class='section'>
+    <figure class="image">
+        <img src="images/Transient model.png" alt="Description 1">
+
+        In the preprocessing stage, we extract a guiding amplitude vector from the target sound effects following the steps as shown above: computing STFT, performing a 
+        harmonic-percussive source separation of the signal, computing the spectral peak of the percussive signal, and then getting the amplitude vector of the place 
+        where it detects a spectral peak. The decoder uses this information to output the required amplitude and frequency for the sinusoidal modelling in the DCT domain.
+        Once the sinusoids are synthesized, we convert them to time domain using IDCT, which would result in various kinds of transient signals in different time frames.
+        </div>
+
+    <h1 class="section-title">Synthesis results</h1>
+
+    <div class="section">
+        <p>Below we show our synthesis results. We use some reference SFX tracks as guiding sounds and extract their acoustic features including fundamental frequency, 
+            amplitude, transient components, and mel-spectrograms. We fed these features into our model to perform timbre transfer. Ideally the generated sound should be 
+            identical or close to the reference soundtrack. 
+            </p>
+        </div>
+
+    <!-- Gunshots section -->
+    <h2 class="section-title">Gunshots</h2>
+
+    <div class="column-section">
+        <!-- Column 1 -->
+        <div class="column">
+            <h4 class="title is-4">Reference</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Gunshots/037.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Gunshots/037.png" alt="Description 1">
+            </figure>
+            <h4 class="title is-4">Reference</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Gunshots/048.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Gunshots/048.png" alt="Description 1">
+            </figure>
+        </div>
+        
+    
+        <!-- Column 2 -->
+        <div class="column">
+            <h4 class="title is-4">DDSP</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Gunshots/DDSP_037.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Gunshots/ddsp-037.png" alt="Description 2">
+            </figure>
+            <h4 class="title is-4">DDSP</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Gunshots/DDSP_048.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Gunshots/ddsp-048.png" alt="Description 2">
+            </figure>
+        </div>
+    
+        <!-- Column 3 -->
+        <div class="column">
+            <h4 class="title is-4">DDSP-SFX</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Gunshots/DDSP-VAE_037.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Gunshots/ddsp-vae-037.png" alt="Description 3">
+            </figure>
+            <h4 class="title is-4">DDSP-SFX</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Gunshots/DDSP-VAE_048.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Gunshots/ddsp-vae-048.png" alt="Description 3">
+            </figure>
+        </div>
+    </div>
+
+
+    <!-- Footsteps section -->
+    <h2 class="section-title">Footsteps</h2>
+
+    <div class="column-section">
+        <!-- Column 1 -->
+        <div class="column">
+            <h4 class="title is-4">Reference</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Footsteps/1.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Footsteps/1.png" alt="Description 1">
+            </figure>
+            <h4 class="title is-4">Reference</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Footsteps/2.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Footsteps/2.png" alt="Description 1">
+            </figure>
+            <h4 class="title is-4">Reference</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Footsteps/3.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Footsteps/3.png" alt="Description 1">
+            </figure>
+        </div>
+        
+    
+        <!-- Column 2 -->
+        <div class="column">
+            <h4 class="title is-4">DDSP</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Footsteps/ddsp-1.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Footsteps/ddsp-1.png" alt="Description 2">
+            </figure>
+            <h4 class="title is-4">DDSP</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Footsteps/ddsp-2.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Footsteps/ddsp-2.png" alt="Description 2">
+            </figure>
+            <h4 class="title is-4">DDSP</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Footsteps/ddsp-3.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Footsteps/ddsp-3.png" alt="Description 2">
+            </figure>
+        </div>
+    
+        <!-- Column 3 -->
+        <div class="column">
+            <h4 class="title is-4">DDSP-SFX</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Footsteps/ddspvae-1.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Footsteps/ddsp-vae-1.png" alt="Description 3">
+            </figure>
+            <h4 class="title is-4">DDSP-SFX</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Footsteps/ddspvae-2.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Footsteps/ddsp-vae-2.png" alt="Description 3">
+            </figure>
+            <h4 class="title is-4">DDSP-SFX</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Footsteps/ddspvae-3.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Footsteps/ddsp-vae-3.png" alt="Description 3">
+            </figure>
+        </div>
+    </div>
+    
+
+    <!-- Motors section -->
+    <h2 class="section-title">Motors</h2>
+
+    <div class="column-section">
+        <!-- Column 1 -->
+        <div class="column">
+            <h4 class="title is-4">Reference</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Motors/1.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Motors/1.png" alt="Description 1">
+            </figure>
+            <h4 class="title is-4">Reference</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Motors/2.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Motors/2.png" alt="Description 1">
+            </figure>
+            <h4 class="title is-4">Reference</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Motors/3.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Motors/3.png" alt="Description 1">
+            </figure>
+        </div>
+        
+    
+        <!-- Column 2 -->
+        <div class="column">
+            <h4 class="title is-4">DDSP</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Motors/DDSP-1.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Motors/DDSP-1.png" alt="Description 2">
+            </figure>
+            <h4 class="title is-4">DDSP</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Motors/DDSP-2.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Motors/DDSP-2.png" alt="Description 2">
+            </figure>
+            <h4 class="title is-4">DDSP</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Motors/DDSP-3.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Motors/DDSP-3.png" alt="Description 2">
+            </figure>
+        </div>
+    
+        <!-- Column 3 -->
+        <div class="column">
+            <h4 class="title is-4">DDSP-SFX</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Motors/DDSP-VAE_1.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Motors/DDSP-VAE_1.png" alt="Description 3">
+            </figure>
+            <h4 class="title is-4">DDSP-SFX</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Motors/DDSP-VAE_2.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Motors/DDSP-VAE_2.png" alt="Description 3">
+            </figure>
+            <h4 class="title is-4">DDSP-SFX</h4>
+            <audio preload='metadata' controls>
+                <source src='Reconstruction/Motors/DDSP-VAE_3.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Reconstruction/Motors/DDSP-VAE_3.png" alt="Description 3">
+            </figure>
+        </div>
+    </div>
+    <div class="section">
+        <p>Above we could see that for impulsive sounds (footsteps and gunshots), DDSP tends to rely heavily on its harmonic synthesizer, with very audible
+            harmonic artifacts. This is because we set the number of harmonics for the harmonic synthesizer as 100, for unity purposes. 
+            The decoder by itself doesn't learn to attenuate the harmonic synthesizer very well with this structure. Our approach could synthesize inharmonic 
+            sounds easily with an indicative harmonic attentuator. Further, our approach seems to synthesize impulsive sounds with sharper attacks. This could
+            be seen in gunshot sounds which contain many fast repetitive impulses. 
+            </p>
+        </div>
+
+
+
+    <hr>
+
+
+    <h1 class="section-title">Voice-to-SFX timbre transfer</h2>
+        <div class="section">
+            <p>Our model is capable of performing timbre transfer from out-of-domain sounds. We use voice as guiding sounds to showcase this. We extract the fundamental frequency
+                and amplitude contours from the voice. We feed in a self-determined latent vector z to variate the timbres. We set z=0 for the entire time frames
+                as a reference. We then change the value of z from 2 or 3 seconds of time to show how varying the latent variable could contribute to timbre changes.
+                </p>
+            </div>
+
+    <h2 class="section-title">Gunshots</h2>
+
+    <div class="column-section">
+        <!-- Column 1 -->
+        <div class="column">
+            <h4 class="title is-4">Voice</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Gunshots/voice_explosion_1.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Gunshots/voice_explosion_1.png" alt="Description 1">
+            </figure>
+        </div>
+        
+    
+        <!-- Column 2 -->
+        <div class="column">
+            <h4 class="title is-4">z=0</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Gunshots/gunshots-1-300.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Gunshots/gunshots-1-300.png" alt="Description 2">
+            </figure>
+        </div>
+    
+        <!-- Column 3 -->
+        <div class="column">
+            <h4 class="title is-4">z=3 after 2s</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Gunshots/gunshots-1-300-0.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Gunshots/gunshots-1-300-0.png" alt="Description 3">
+            </figure>
+        </div>
+    </div>
+
+
+    <h2 class="section-title">Footsteps</h2>
+
+    <div class="column-section">
+        <!-- Column 1 -->
+        <div class="column">
+            <h4 class="title is-4">Voice</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Footsteps/voice-footstep-1.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Footsteps/voice-footstep-1.png" alt="Description 1">
+            </figure>
+        </div>
+        
+    
+        <!-- Column 2 -->
+        <div class="column">
+            <h4 class="title is-4">z=0</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Footsteps/footsteps-1-100.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Footsteps/footsteps-1-100.png" alt="Description 2">
+            </figure>
+        </div>
+    
+        <!-- Column 3 -->
+        <div class="column">
+            <h4 class="title is-4">z=3 after 2s</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Footsteps/footsteps-1-0-500.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Footsteps/footsteps-1-0-500.png" alt="Description 3">
+            </figure>
+        </div>
+    </div>
+
+    <div class="column-section">
+        <!-- Column 1 -->
+        <div class="column">
+            <h4 class="title is-4">Voice</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Footsteps/voice-footstep-5.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Footsteps/voice-footstep-5.png" alt="Description 1">
+            </figure>
+        </div>
+        
+    
+        <!-- Column 2 -->
+        <div class="column">
+            <h4 class="title is-4">z=0</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Footsteps/footsteps-5-0.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Footsteps/footsteps-5-0.png" alt="Description 2">
+            </figure>
+        </div>
+    
+        <!-- Column 3 -->
+        <div class="column">
+            <h4 class="title is-4">z=3 after 2s</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Footsteps/footsteps-5-0-500.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Footsteps/footsteps-5-0-500.png" alt="Description 3">
+            </figure>
+        </div>
+    </div>
+
+    <div class="column-section">
+        <!-- Column 1 -->
+        <div class="column">
+            <h4 class="title is-4">Voice</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Footsteps/voice-footstep-6.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Footsteps/voice-footstep-6.png" alt="Description 1">
+            </figure>
+        </div>
+        
+    
+        <!-- Column 2 -->
+        <div class="column">
+            <h4 class="title is-4">z=0</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Footsteps/footsteps-6-0.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Footsteps/footsteps-6-0.png" alt="Description 2">
+            </figure>
+        </div>
+    
+        <!-- Column 3 -->
+        <div class="column">
+            <h4 class="title is-4">z=3 after 2s</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Footsteps/footsteps-6-0-500.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Footsteps/footsteps-6-0-500.png" alt="Description 3">
+            </figure>
+        </div>
+    </div>
+
+    <h2 class="section-title">Motors</h2>
+    <div class="column-section">
+        <!-- Column 1 -->
+        <div class="column">
+            <h4 class="title is-4">Voice</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesize_with_z/motors/voice_1.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesize_with_z/motors/voice.png" alt="Description 1">
+            </figure>
+        </div>
+        
+    
+        <!-- Column 2 -->
+        <div class="column">
+            <h4 class="title is-4">z=0</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesize_with_z/motors/z-unchanged.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesize_with_z/motors/z-unchanged.png" alt="Description 2">
+            </figure>
+        </div>
+    
+        <!-- Column 3 -->
+        <div class="column">
+            <h4 class="title is-4">z=3 after 2s</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesize_with_z/motors/z_change_2s.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesize_with_z/motors/z_change_2s.png" alt="Description 3">
+            </figure>
+        </div>
+    </div>
+
+    <div class="column-section">
+        <!-- Column 1 -->
+        <div class="column">
+            <h4 class="title is-4">Voice</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/voice/voice_motor_2.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/voice/voice_motor_2.png" alt="Description 1">
+            </figure>
+        </div>
+        
+    
+        <!-- Column 2 -->
+        <div class="column">
+            <h4 class="title is-4">z=0</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Motors/motor_7.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Motors/motor_7.png" alt="Description 2">
+            </figure>
+        </div>
+    
+        <!-- Column 3 -->
+        <div class="column">
+            <h4 class="title is-4">z=3 after 3s</h4>
+            <audio preload='metadata' controls>
+                <source src='Presentation demo/synthesized/Motors/motor_7_200-300-3.wav' type='audio/wav'>
+            </audio>
+            <figure class="image">
+                <img src="Presentation demo/synthesized/Motors/motor_7_200-300-3.png" alt="Description 3">
+            </figure>
+        </div>
+    </div>
+
+    <div class="section">
+        <p>
+            From the spectrogram we could see a clear difference when we variate the value of z from a time frame. 
+            This shows that our latent vector is able to achieve time-varying timbre control over the generated sounds. When changing it
+            from a certain time frame, it changes its spectral characteristics immediately without creating any distorted glitch 
+            in the joint areas. 
+        </p>
+    </div>
+
+
+
+    <!--BibTex citation -->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h4 class="title">BibTeX</h4>
+      <pre><code>@inproceedings{liu2023ddspsfx,
+        title={DDSP-SFX: Acoustically-guided sound effects generation with differentiable digital signal processing}, 
+        Conference={Digital Audio Effects Conference 2024},
+        year={2024},
+        Pages={216-221},
+  }</code></pre>
+    </div>
+</section>
+<!--End BibTex citation -->
+
+
+  <footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+
+          <p>
+            This page was built using the <a href="https://github.com/audio-samples/audio-samples.github.io" target="_blank">Academic Project Page Template</a>.
+            You are free to borrow the of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
+
+<script>
+document
+    .getElementById('select-speaker')
+    .addEventListener('change', function () {
+        'use strict';
+        var targets = document.getElementsByClassName("select-speaker")
+        for (let i = 0; i < targets.length; i++) {
+            name = "samples/mp3/ted_speakers/" + this.value + "/sample-" + i.toString() + ".mp3"
+            targets[i].setAttribute("src", name)
+            targets[i].parentElement.load()
+        }
+});
+</script>
