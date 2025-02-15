@@ -1,0 +1,28 @@
+data:
+  data_location: /home/rein/Downloads/Sound_datasets/Footstep-set
+  extension: wav
+model:
+  block_size: 256
+  hidden_size: 512
+  n_bands: 100
+  n_classes: 7
+  sampling_rate: 44100
+preprocess:
+  block_size: 256
+  oneshot: true
+  out_dir: ./preprocessed-footstep/
+  sampling_rate: 44100
+  signal_length: 176640
+train:
+  batch: 16
+  overlap: 0.5
+  saving_epochs: 500
+  scales:
+  - 2048
+  - 1024
+  - 512
+  - 256
+  - 128
+  - 64
+  - 32
+  - 16

@@ -1,0 +1,24 @@
+data:
+  data_location: /home/rein/Downloads/Sound_datasets/Impact-set
+  extension: "wav"
+
+preprocess:
+  sampling_rate: &samplingrate 44100
+  signal_length: &signallength 176640
+  block_size: &blocksize 256 # must be a power of 2 if using realtime
+  oneshot: true # crop every audio file to exactly signal length
+  out_dir: ./preprocessed-impact/
+
+model:
+  hidden_size: 512
+  n_bands: 100
+  n_classes: 7
+  sampling_rate: *samplingrate
+  block_size: *blocksize
+  # ratio: 3
+
+train:
+  scales: [2048, 1024, 512, 256, 128, 64, 32, 16]
+  overlap: .50
+  saving_epochs: 500
+  batch: 16
